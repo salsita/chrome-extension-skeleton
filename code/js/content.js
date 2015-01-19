@@ -11,7 +11,7 @@
   // rest of the extension via messaging system (you want to know when new
   // instance of given context is created / destroyed, or you want to be able to
   // issue command requests from this context), you may simply omit the
-  // `hadnlers` parameter for good when invoking msg.init()
+  // `handlers` parameter for good when invoking msg.init()
   var handlers = require('./modules/handlers').create('ct');
   require('./modules/msg').init('ct', handlers);
 
