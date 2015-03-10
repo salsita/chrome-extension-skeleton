@@ -1,25 +1,30 @@
 var assert = require('assert');
 
 // mocked chrome.runtime
-var runtime = require('./chrome.runtime.mock').runtime;
+var ChromeRuntime = require('./chrome.runtime.mock');
+var runtime1 = new ChromeRuntime();
+var runtime2 = new ChromeRuntime();
+
 // mocked chrome.devtools
 var devtools = require('./chrome.devtools.mock').devtools;
 
 // tested messaging module for background context and other contexts
-var bgMain, ctxMain = []; // these will stay for inspecting internals, while
+var bgMain, bgExt, ctxMain = []; // these will stay for inspecting internals, while
 var bg, ctx = [];         // these will become messaging objects later on
+var bg1; // messaging object for cross-extension messaging
 // number of non-background contexts used in the test
 var CTX_COUNT = 20;
 // background handlers, for testing custom onConnect and onDisconnect callbacks
-var bgHandlers;
+var bgHandlers, bgExtHandlers;
 
 // load isolated module copies, so that we can simulate
 // multiple parallel contexts
 bgMain = require('./msg');  // for background, we can load the main module
 bgMain.__allowUnitTests();  // install unit test inspecting methods
+bgExt = bgMain.__createClone();
 // non-bg copies:
 for (var i = 0; i < CTX_COUNT; i++) {
-  ctxMain.push(bgMain.__createClone().__setRuntime(runtime));
+  ctxMain.push(bgMain.__createClone().__setRuntime(runtime1));
 }
 
 // stores history of handler invocations (in all contexts)
@@ -85,6 +90,12 @@ function createHandlers(context, idx) {
     res._onDisconnect = function(ctxName, tabId) {
       addLog(context, idx, 'onDisconnect', [ ctxName, tabId ]);
     };
+    res._onExtensionConnect = function(extensionId) {
+      addLog(context, idx, 'onExtensionConnect', [ extensionId ]);
+    };
+    res._onExtensionDisconnect = function(extensionId) {
+      addLog(context, idx, 'onExtensionDisconnect', [ extensionId ]);
+    };
   }
   //
   return res;
@@ -127,16 +138,31 @@ describe('messaging module', function() {
 
   it('should init() and return msg object with cmd(), bcast() and bg()', function(done) {
     var i;
-    runtime.__resetTabId();
-    bgMain.__setRuntime(runtime);
+    runtime1.__resetTabId();
+    runtime2.__resetTabId();
+    bgMain.__setRuntime(runtime1);
+    bgExt.__setRuntime(runtime2);
     var pm = bgMain.__getPortMap();
+    assert.deepEqual({}, pm);
+    pm = bgExt.__getPortMap();
     assert.deepEqual({}, pm);
     // background
     bg = bgMain.init('bg', bgHandlers = createHandlers('bg', 1));
     assert(typeof(bg) === 'object');
     assert(typeof(bg.cmd) === 'function');
     assert(typeof(bg.bcast) === 'function');
+    assert(typeof(bg.connectExt) === 'function');
+    assert(typeof(bg.cmdExt) === 'function');
     assert(typeof(bg.bg) === 'undefined');
+    // background for cross-extension messaging
+    bg1 = bgExt.init('bg', bgExtHandlers = createHandlers('bg', 2));
+    assert(typeof(bg1) === 'object');
+    assert(typeof(bg1.cmd) === 'function');
+    assert(typeof(bg1.bcast) === 'function');
+    assert(typeof(bg1.connectExt) === 'function');
+    assert(typeof(bg1.cmdExt) === 'function');
+    assert(typeof(bg1.bg) === 'undefined');
+
     // first 6 context only!
     for (i = 0; i < 6; i++) {
       var def = ctxDefs[i];
@@ -235,8 +261,8 @@ describe('messaging module', function() {
   it('should set local callback tables (msg handlers)', function() {
     var handlers = bgMain.__getHandlers();
     assert('object' === typeof(handlers));
-    // log, random, invalid, bg_cmd, bg_1_cmd, _onConnect, _onDisconnect, onConnect, onDisconnect
-    assert(9 === Object.keys(handlers).length);
+    // log, random, invalid, bg_cmd, bg_1_cmd, _onConnect, _onDisconnect, _onExtensionConnect, _onExtensionDisconnect, onConnect, onDisconnect
+    assert(11 === Object.keys(handlers).length);
     handlers = ctxMain[0].__getHandlers();
     assert('object' === typeof(handlers));
     assert(5 === Object.keys(handlers).length); // log, random, invalid, ct_cmd, ct_1_cmd
@@ -1090,4 +1116,50 @@ describe('messaging module', function() {
     });
   });
 
+  it ('should properly connect to another extension', function(done) {
+    // install onConnect / onDisconnect handlers
+    bgHandlers.onExtensionConnect = bgHandlers._onExtensionConnect;
+    bgHandlers.onExtensionDisconnect = bgHandlers._onExtensionDisconnect;
+    bgExtHandlers.onExtensionConnect = bgExtHandlers._onExtensionConnect;
+    bgExtHandlers.onExtensionDisconnect = bgExtHandlers._onExtensionDisconnect;
+
+    bg.connectExt(runtime2.id);
+
+    setImmediate(function _f() {
+      if (handlerLog.length < 2) {setImmediate(_f); return; }
+      assert.strictEqual(handlerLog[0].context, 'bg');
+      assert.strictEqual(handlerLog[0].idx, 1);
+      assert.strictEqual(handlerLog[0].cmd, 'onExtensionConnect');
+      assert.strictEqual(handlerLog[0].args[0], runtime2.id);
+      assert.strictEqual(handlerLog[1].context, 'bg');
+      assert.strictEqual(handlerLog[1].idx, 2);
+      assert.strictEqual(handlerLog[1].cmd, 'onExtensionConnect');
+      assert.strictEqual(handlerLog[1].args[0], runtime1.id);
+
+      done();
+    });
+  });
+
+  it('should properly call handler of foreign extension\'s background', function(done) {
+    var res = bg1.cmdExt(runtime1.id, 'log', true, 0.1, 'str', ['a','b'], {o:1,p:2}, null, undefined, 1);
+    assert(true === res);
+    setImmediate(function _f() {
+      if (1 !== handlerLog.length) { setImmediate(_f); return; }
+      var log = handlerLog[0];
+      assert('bg' === log.context);
+      assert.strictEqual(log.idx, 1);
+      assert('log' === log.cmd);
+      var args = log.args;
+      assert(8 === args.length);
+      assert(true === args[0]);
+      assert(0.1 === args[1]);
+      assert('str' === args[2]);
+      assert.deepEqual(['a','b'], args[3]);
+      assert.deepEqual({o:1,p:2}, args[4]);
+      assert(null === args[5]);
+      assert((undefined === args[6]) || (null === args[6]));
+      assert(1 === args[7]);
+      done();
+    });
+  });
 });
