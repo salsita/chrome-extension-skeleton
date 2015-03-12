@@ -353,6 +353,7 @@ Messaging.prototype.onCustomMsg = function(message) {
   // create callback waiting for N results, then send response (background):
   function createCbForMoreResults(N) {
     var results = [];
+    var myId = this.runtime.id;
     return function(result, resultValid) {
       if (resultValid !== false) {  // can be either `true` or `undefined`
         results.push(result);
@@ -367,7 +368,7 @@ Messaging.prototype.onCustomMsg = function(message) {
         };
 
         if (message.extensionId) {
-          response.extensionId = runtime.id;
+          response.extensionId = myId;
         }
         _port.port.postMessage(response);
       }
@@ -407,7 +408,7 @@ Messaging.prototype.onCustomMsg = function(message) {
             result: message.broadcast ? [] : undefined
           };
           if (message.extensionId) {
-            response.extensionId = runtime.id;
+            response.extensionId = this.runtime.id;
           }
           _port.port.postMessage(response);
         }
@@ -756,7 +757,7 @@ Messaging.prototype.createMsgObject = function(myContextName) {
         sendResponse: true,
         args: args,
         reqId: this.requestId,
-        extensionId: runtime.id
+        extensionId: this.runtime.id
       });
 
       var _arr = this.pendingReqs[extensionId] || [];
