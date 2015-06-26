@@ -93,8 +93,11 @@ For more information, please check also README.md files in subdirectories.
 ### Under the hood:
 
 If you want to understand better the structure of the code and how it really
-works, please check this
-[prezi](http://prezi.com/yxj7zs7ixlmw/chrome-extension-skeleton/).
+works, please check the following sources:
+
+* [introductory blog post](https://blog.javascripting.com/2014/06/18/the-chrome-extension-skeleton-building-modular-extensions-with-grunt-and-browserify/),
+* [blog post on messaging system](https://blog.javascripting.com/2014/08/11/the-chrome-extension-skeleton-messaging-system/),
+* or this [overall prezi](http://prezi.com/yxj7zs7ixlmw/chrome-extension-skeleton/).
 
 ### Legacy version
 
