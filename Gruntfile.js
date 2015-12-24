@@ -1,3 +1,5 @@
+var crx = require('crx');
+
 module.exports = function(grunt) {
 
   var pkg = grunt.file.readJSON('package.json');
@@ -66,15 +68,6 @@ module.exports = function(grunt) {
       }
     },
 
-    exec: {
-      crx: {
-        cmd: [
-          './crxmake.sh build/unpacked-prod ./mykey.pem',
-          'mv -v ./unpacked-prod.crx build/' + pkg.name + '-' + pkg.version + '.crx'
-        ].join(' && ')
-      }
-    },
-
     uglify: {
       min: { files: fileMaps.uglify }
     },
@@ -95,7 +88,6 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-browserify');
-  grunt.loadNpmTasks('grunt-exec');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
@@ -113,6 +105,27 @@ module.exports = function(grunt) {
       }
       grunt.file.write('build/unpacked-dev/manifest.json', JSON.stringify(mnf, null, 4) + '\n');
       grunt.log.ok('manifest.json generated');
+    }
+  );
+
+  grunt.registerTask(
+    'crx', 'Generate the crx file',
+    function() {
+      var done = this.async();
+
+      var crxFile = new crx({
+        privateKey: grunt.file.read('mykey.pem')
+      });
+
+      crxFile.load('build/unpacked-prod').then(function() {
+        return crxFile.pack();
+      }).then(function(crxBuffer) {
+        var fileName = pkg.name + '-' + pkg.version + '.crx';
+        grunt.file.write('build/' + fileName, crxBuffer);
+        grunt.log.ok(fileName + ' generated');
+
+        done();
+      });
     }
   );
 
@@ -136,6 +149,6 @@ module.exports = function(grunt) {
   //
 
   grunt.registerTask('default', ['clean', 'test', 'mkdir:unpacked', 'copy:main', 'manifest',
-    'mkdir:js', 'browserify', 'copy:prod', 'uglify', 'exec', 'circleci']);
+    'mkdir:js', 'browserify', 'copy:prod', 'uglify', 'crx', 'circleci']);
 
 };
