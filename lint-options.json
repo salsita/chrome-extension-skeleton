@@ -17,5 +17,6 @@
     "describe": true,
     "afterEach": true,
     "it": true
-  }
+  },
+  "reporterOutput": ""
 }
