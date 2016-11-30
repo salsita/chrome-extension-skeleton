@@ -66,12 +66,13 @@ module.exports = function(grunt) {
       }
     },
 
-    exec: {
-      crx: {
-        cmd: [
-          './crxmake.sh build/unpacked-prod ./mykey.pem',
-          'mv -v ./unpacked-prod.crx build/' + pkg.name + '-' + pkg.version + '.crx'
-        ].join(' && ')
+    crx: {
+      signedExtension: {
+        src: 'build/unpacked-prod/**/*',
+        dest: 'build/'+ pkg.name + '-' + pkg.version + '.crx',
+        options: {
+          privateKey: './mykey.pem'
+        }
       }
     },
 
@@ -95,7 +96,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-mocha-test');
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-browserify');
-  grunt.loadNpmTasks('grunt-exec');
+  grunt.loadNpmTasks('grunt-crx');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
 
@@ -136,6 +137,6 @@ module.exports = function(grunt) {
   //
 
   grunt.registerTask('default', ['clean', 'test', 'mkdir:unpacked', 'copy:main', 'manifest',
-    'mkdir:js', 'browserify', 'copy:prod', 'uglify', 'exec', 'circleci']);
+    'mkdir:js', 'browserify', 'copy:prod', 'uglify', 'crx', 'circleci']);
 
 };
