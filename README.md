@@ -41,7 +41,6 @@
     
     Gruntfile.js       # grunt tasks (see below)
     circle.yml         # integration with CircleCI
-    crxmake.sh         # official build script for packing Chromium extensions
     mykey.pem          # certificate file, YOU NEED TO GENERATE THIS FILE, see below
     lint-options.json  # options for JS-linting
     package.json       # project description file (name, version, dependencies, ...)
@@ -53,8 +52,8 @@
 * `test-cont`: continuos `test` loop
 * default: `clean`, `test`, build step (copy all necessary files to `build`
   directory, browserify JS sources, prepare production version (using uglify),
-  pack the `crx` (using official shell script), and copy the resulting `crx` to
-  CircleCI artifacts directory (only when on CircleCI))
+  pack the `crx`), and copy the resulting `crx` to
+  CircleCI artifacts directory (only when on CircleCI)
 
 ### After you clone:
 
@@ -98,12 +97,3 @@ works, please check the following sources:
 * [introductory blog post](https://blog.javascripting.com/2014/06/18/the-chrome-extension-skeleton-building-modular-extensions-with-grunt-and-browserify/),
 * [blog post on messaging system](https://blog.javascripting.com/2014/08/11/the-chrome-extension-skeleton-messaging-system/),
 * or this [overall prezi](http://prezi.com/yxj7zs7ixlmw/chrome-extension-skeleton/).
-
-### Legacy version
-
-Before this version of the skeleton, we used [RequireJS](http://requirejs.org/)
-modules, [jasmine-based](http://jasmine.github.io/) unit tests and older
-`chrome.extension.{onMessage|sendMessage}` API for message exchange between
-background and content scripts. This version is still available in
-[legacy](https://github.com/salsita/chrome-extension-skeleton/tree/legacy)
-branch here.
