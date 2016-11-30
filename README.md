@@ -49,7 +49,7 @@
 
 * `clean`: clean `build` directory
 * `test`: JS-lint and mocha test, single run
-* `test-cont`: continuos `test` loop
+* `test-cont`: continuous `test` loop
 * default: `clean`, `test`, build step (copy all necessary files to `build`
   directory, browserify JS sources, prepare production version (using uglify),
   pack the `crx`), and copy the resulting `crx` to
