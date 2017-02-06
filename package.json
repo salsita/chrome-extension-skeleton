@@ -10,7 +10,6 @@
     "build": "mkdir -p ./build/prod && webpack --config ./webpack/webpack.config.prod.js",
     "start": "mkdir -p ./build/dev && webpack --config ./webpack/webpack.config.dev.js",
     "lint": "eslint src/js/",
-    "deploy": "npm run build && now ./build",
     "test": "mocha-webpack --watch --webpack-config ./webpack/webpack.config.test.js \"src/js/**/*.spec.js\"",
     "test:ci": "mocha-webpack --webpack-config ./webpack/webpack.config.test.js \"src/js/**/*.spec.js\""
   },
@@ -35,11 +34,11 @@
     "eslint-plugin-import": "2.2.0",
     "eventemitter2": "0.4.14",
     "mocha": "1.20.0",
-    "mocha-webpack": "^0.7.0",
+    "mocha-webpack": "0.7.0",
     "sinon": "1.12.2",
-    "webpack": "1.13.3",
+    "webpack": "2.2.1",
     "webpack-dev-server": "1.16.2",
-    "webpack-node-externals": "^1.5.4",
+    "webpack-node-externals": "1.5.4",
     "webpack-version-file-plugin": "0.2.2"
   },
   "export-symbol": "extensionSkeleton.exports"

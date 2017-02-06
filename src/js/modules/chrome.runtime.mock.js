@@ -97,4 +97,4 @@ function ChromeRuntime() {
 
 
 // exported
-module.exports = ChromeRuntime;
+export default ChromeRuntime;

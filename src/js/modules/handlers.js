@@ -9,7 +9,9 @@ function log(...args) {
   console.log(...args); // eslint-disable-line no-console
 }
 
-module.exports.create = context => ({
+const handlers = {};
+
+handlers.create = context => ({
   random: (done) => {
     log(`--->${context}::random() invoked`);
     const r = Math.floor(1000 * Math.random());
@@ -32,6 +34,8 @@ module.exports.create = context => ({
 });
 
 // for surpressing console.log output in unit tests:
-module.exports.__resetLog = () => { // eslint-disable-line no-underscore-dangle
+handlers.__resetLog = () => { // eslint-disable-line no-underscore-dangle
   log = () => {}; // eslint-disable-line no-func-assign
 };
+
+export default handlers;

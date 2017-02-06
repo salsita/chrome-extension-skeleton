@@ -36,8 +36,6 @@ module.exports = _.merge({}, config, {
       name: appName
     }),
     new webpack.DefinePlugin({ 'process.env.NODE_ENV': '"production"' }),
-    new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.optimize.DedupePlugin(),
     new webpack.optimize.UglifyJsPlugin({
       compressor: {
         screw_ie8: true,

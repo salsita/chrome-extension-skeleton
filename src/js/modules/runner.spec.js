@@ -2,7 +2,7 @@ import assert from 'assert';
 import sinon from 'sinon'; // eslint-disable-line import/no-extraneous-dependencies
 
 import runner from './runner';
-import { SAME_TAB } from './msg';
+import message from './msg';
 
 // surpress console.log
 runner.__resetLog();
@@ -55,7 +55,7 @@ describe('runner module', () => {
 
   it('should issue "echo" command with tabId = SAME_TAB', () => {
     runner.go(msg, { type: 'bcast', cmd: 'echo', arg: 'hello', tab: -2, ctx_all: true });
-    assert(msg.bcast.calledWith(SAME_TAB, 'echo', 'hello'));
+    assert(msg.bcast.calledWith(message.SAME_TAB, 'echo', 'hello'));
   });
 
   it('should issue "echo" command with provided tabId', () => {

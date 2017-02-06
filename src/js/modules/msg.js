@@ -940,7 +940,7 @@ function installUnitTestMethods(target, delegate) {
   /* eslint-enable */
 }
 
-module.exports = {
+export default {
   // same tab id
   SAME_TAB,
   // see description for init function above

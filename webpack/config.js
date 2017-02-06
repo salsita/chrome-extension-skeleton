@@ -12,13 +12,12 @@ module.exports = {
     filename: './js/[name].js'
   },
   resolve: {
-    root: [path.resolve(__dirname, '../src')],
-    extensions: ['', '.js']
+    modules: [path.join(__dirname, 'src'), 'node_modules']
   },
   module: {
-    loaders: [{
+    rules: [{
       test: /\.js$/,
-      loaders: ['babel'],
+      loaders: ['babel-loader'],
       include: path.resolve(__dirname, '../src/js')
     }]
   }

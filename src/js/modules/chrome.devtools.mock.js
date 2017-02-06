@@ -7,4 +7,4 @@ const data = { inspectedWindow: { tabId: 1 } };
 data.__setTabId = function(id) { data.inspectedWindow.tabId = id; }; // eslint-disable-line
 
 // exported
-module.exports.devtools = data;
+export const devtools = data;

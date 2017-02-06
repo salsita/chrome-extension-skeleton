@@ -6,7 +6,9 @@
 //
 import $ from 'jquery';
 
-module.exports.init = (callback) => {
+const form = {};
+
+form.init = (callback) => {
   $(() => {
     // form logic:
     $('#type_bcast, #type_cmd, #type_bg').change(() => {
@@ -109,3 +111,5 @@ module.exports.init = (callback) => {
     $('#tab_provided_text').prop('disabled', true);
   });
 };
+
+export default form;

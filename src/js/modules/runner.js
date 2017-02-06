@@ -5,13 +5,14 @@
 // it'll invoke the methods, and structured `info` which is collected from the
 // form. we assume both `msg` and `info` parameters to be valid
 
-import { SAME_TAB } from './msg';
+import message from './msg';
 
 let log = console.log.bind(console); // eslint-disable-line no-console
 function callback(res) { log(`<<<<< callback invoked, return value = ${JSON.stringify(res)}`); }
 
+const runner = {};
 
-module.exports.go = (msg, info) => {
+runner.go = (msg, info) => {
   if ('bg' === info.type) { // msg.bg
     if ('echo' === info.cmd) {
       log(`>>>>> invoking msg.bg('echo', '${info.arg}', callback)`);
@@ -35,10 +36,10 @@ module.exports.go = (msg, info) => {
     } else if (-2 === info.tab) { // same id
       if (info.ctx_all) {
         log(`>>>>> invoking msg.${info.type}(SAME_TAB, 'echo', '${info.arg}', callback)`);
-        msg[info.type](SAME_TAB, 'echo', info.arg, callback);
+        msg[info.type](message.SAME_TAB, 'echo', info.arg, callback);
       } else {
         log(`>>>>> invoking msg.${info.type}(SAME_TAB, ${JSON.stringify(info.ctxs)}, 'echo', '${info.arg}', callback)`);
-        msg[info.type](SAME_TAB, info.ctxs, 'echo', info.arg, callback);
+        msg[info.type](message.SAME_TAB, info.ctxs, 'echo', info.arg, callback);
       }
     } else if (info.ctx_all) {  // tab id provided
       log(`>>>>> invoking msg.${info.type}(${info.tab}, 'echo', '${info.arg}', callback)`);
@@ -58,10 +59,10 @@ module.exports.go = (msg, info) => {
   } else if (-2 === info.tab) { // same id
     if (info.ctx_all) {
       log(`>>>>> invoking msg.${info.type}(SAME_TAB, '${info.cmd}', callback)`);
-      msg[info.type](SAME_TAB, info.cmd, callback);
+      msg[info.type](message.SAME_TAB, info.cmd, callback);
     } else {
       log(`>>>>> invoking msg.${info.type}(SAME_TAB, ${JSON.stringify(info.ctxs)}, '${info.cmd}', callback)`);
-      msg[info.type](SAME_TAB, info.ctxs, info.cmd, callback);
+      msg[info.type](message.SAME_TAB, info.ctxs, info.cmd, callback);
     }
   } else if (info.ctx_all) { // tab id provided
     log(`>>>>> invoking msg.${info.type}(${info.tab}, '${info.cmd}', callback)`);
@@ -73,4 +74,6 @@ module.exports.go = (msg, info) => {
 };
 
 // for surpressing console.log output in unit tests:
-module.exports.__resetLog = () => { log = () => {}; };
+runner.__resetLog = () => { log = () => {}; };
+
+export default runner;
