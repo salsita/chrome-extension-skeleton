@@ -30,7 +30,7 @@ module.exports = _.merge({}, config, {
       outputFile: path.resolve(__dirname, '../build/prod/manifest.json'),
     }),
     new CrxPlugin({
-      keyFile: '../myKey.pem',
+      keyFile: '../mykey.pem',
       contentPath: '../build/prod',
       outputPath: '../build',
       name: appName

@@ -994,7 +994,8 @@ describe('messaging module', () => {
       assert('ct' === log.args[0]);
       assert(10 === log.args[1]);
       // uninstall onConnect / onDisconnect background handlers
-      bgHandlers.onConnect = bgHandlers.onDisconnect = undefined;
+      bgHandlers.onConnect = undefined;
+      bgHandlers.onDisconnect = undefined;
       done();
     });
   });

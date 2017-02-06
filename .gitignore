@@ -4,5 +4,6 @@ node_modules
 build/*.crx
 build/dev
 build/prod
+build/updates.xml
 .tmp
 *.swp
