@@ -1,7 +1,10 @@
 .DS_Store
 mykey.pem
 node_modules
+npm-debug.log
 build/*.crx
-build/unpacked-dev
-build/unpacked-prod
+build/dev
+build/prod
+build/updates.xml
+.tmp
 *.swp

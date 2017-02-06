@@ -1,1 +1,1 @@
-Do not delete this directory, grunt jobs stores the builds here!
+Do not delete this directory, webpack stores the builds here!

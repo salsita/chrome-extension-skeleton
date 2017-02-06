@@ -14,5 +14,8 @@
   "devtools_page": "html/devtools.html",
   "permissions": [ "<all_urls>" ],
   "web_accessible_resources": [ "js/*", "html/*", "css/*", "images/*" ],
-  "content_security_policy": "script-src 'self'; object-src 'self'"
+  "content_security_policy": "script-src 'self'; object-src 'self'",
+  "name": "<%= package.name %>",
+  "version": "<%= package.version %>",
+  "description": "<%= package.description %>"
 }

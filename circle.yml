@@ -6,4 +6,4 @@ dependencies:
 
 test:
   override:
-    - grunt
+    - webpack run build

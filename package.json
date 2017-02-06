@@ -1,26 +1,45 @@
 {
   "name": "extension-skeleton",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Bare Google Chrome extension skeleton.",
-  "dependencies": {},
-  "devDependencies": {
-    "browserify": "~7.0.3",
-    "eventemitter2": "^0.4.14",
-    "grunt": "~0.4.5",
-    "grunt-browserify": "~3.2.1",
-    "grunt-contrib-clean": "~0.6.0",
-    "grunt-contrib-copy": "~0.7.0",
-    "grunt-contrib-jshint": "~0.10.0",
-    "grunt-contrib-uglify": "~0.6.0",
-    "grunt-contrib-watch": "~0.6.1",
-    "grunt-crx": "^1.0.5",
-    "grunt-mkdir": "~0.1.2",
-    "grunt-mocha-test": "~0.12.4",
-    "mocha": "^1.20.0",
-    "sinon": "~1.12.2"
-  },
   "engines": {
-    "node": ">= 0.10.0"
+    "node": "7.0.0",
+    "npm": "3.10.8"
+  },
+  "scripts": {
+    "build": "mkdir -p ./build/prod && webpack --config ./webpack/webpack.config.prod.js",
+    "start": "mkdir -p ./build/dev && webpack --config ./webpack/webpack.config.dev.js",
+    "lint": "eslint src/js/",
+    "test": "mocha-webpack --watch --webpack-config ./webpack/webpack.config.test.js \"src/js/**/*.spec.js\"",
+    "test:ci": "mocha-webpack --webpack-config ./webpack/webpack.config.test.js \"src/js/**/*.spec.js\""
+  },
+  "dependencies": {
+    "jquery": "3.1.1",
+    "lodash": "4.17.4"
+  },
+  "devDependencies": {
+    "babel-core": "6.18.2",
+    "babel-eslint": "7.1.0",
+    "babel-loader": "6.2.7",
+    "babel-plugin-module-resolver": "2.3.0",
+    "babel-plugin-transform-runtime": "6.15.0",
+    "babel-preset-es2015": "6.18.0",
+    "babel-preset-stage-2": "6.18.0",
+    "copy-webpack-plugin": "4.0.1",
+    "crx-webpack-plugin": "0.1.5",
+    "css-loader": "0.26.0",
+    "eslint": "3.14.0",
+    "eslint-config-airbnb": "14.0.0",
+    "eslint-import-resolver-babel-module": "2.2.1",
+    "eslint-plugin-import": "2.2.0",
+    "eventemitter2": "0.4.14",
+    "mocha": "1.20.0",
+    "mocha-webpack": "0.7.0",
+    "sinon": "1.12.2",
+    "webpack": "2.2.1",
+    "webpack-dev-server": "1.16.2",
+    "webpack-node-externals": "1.5.4",
+    "webpack-version-file-plugin": "0.2.2"
   },
   "export-symbol": "extensionSkeleton.exports"
 }
