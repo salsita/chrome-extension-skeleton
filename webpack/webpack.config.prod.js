@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const merge = require('webpack-merge');
 const path = require('path');
 const webpack = require('webpack');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
@@ -11,7 +11,7 @@ const pkg = require('../package.json');
 const appName = `${pkg.name}-${pkg.version}`;
 
 
-module.exports = _.merge({}, config, {
+module.exports = merge(config, {
   output: {
     path: path.resolve(__dirname, '../build/prod'),
   },
