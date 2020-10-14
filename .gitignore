@@ -8,3 +8,7 @@ build/prod
 build/updates.xml
 .tmp
 *.swp
+
+# intellij config files
+.idea/
+**/.idea/

@@ -1,4 +1,4 @@
-const _ = require('lodash');
+const merge = require('webpack-merge');
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const VersionFilePlugin = require('webpack-version-file-plugin');
@@ -6,7 +6,7 @@ const VersionFilePlugin = require('webpack-version-file-plugin');
 const config = require('./config.js');
 
 
-module.exports = _.merge({}, config, {
+module.exports = merge(config, {
   output: {
     path: path.resolve(__dirname, '../build/dev'),
   },
